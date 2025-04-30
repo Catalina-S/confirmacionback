@@ -64,36 +64,6 @@ async def get_medication_request(req_id: str):
     else:
         raise HTTPException(status_code=500, detail=f"Error: {status}")
 
-def GetPatientById(patient_id: str, db: MongoClient):
-    """
-    Obtiene un paciente por su ID.
-    """
-    try:
-        # Intenta convertir patient_id a ObjectId.  Si falla, lanza una excepción.
-        patient_object_id = ObjectId(patient_id)
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid Patient ID format")
-
-    patient = db.patients.find_one({"_id": patient_object_id})
-    if patient:
-        patient["id"] = str(patient["_id"])  # Renombrar _id a id para la respuesta
-        del patient["_id"]  # Eliminar el campo _id original
-        return patient
-    else:
-        raise HTTPException(status_code=404, detail="Patient not found")
-
-
-def GetPatientByIdentifier(identifier: str, db: MongoClient):
-    """
-    Obtiene un paciente por su identificador.
-    """
-    patient = db.patients.find_one({"identifier": identifier})
-    if patient:
-        patient["id"] = str(patient["_id"])  # Renombrar _id a id
-        del patient["_id"]
-        return patient
-    else:
-        raise HTTPException(status_code=404, detail="Patient not found")
 
 
 if __name__ == '__main__':
